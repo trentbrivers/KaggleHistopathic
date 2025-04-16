@@ -33,30 +33,7 @@ files_in_train = list_files_in_directory(path)
 #print(files_in_train[0], type(files_in_train[0]))
 #Getting all file names works
 
-file_path = os.path.join(path, files_in_train[0])
-
-#test_image = cv.imread(file_path)
-#image_string = files_in_train[0][:-4]
-#print(test_image)
-#print(image_string)
-#current_label = labels_data[(labels_data['id'] == image_string)]['label'].values[0]
-#print(current_label)
-#print(files_in_train[0])
-#print(test_image)
-#Confirmed that it gets file from path
-#save_arr = test_image.ravel()
-
-#np.savetxt("my_array.csv", save_arr, delimiter=",", fmt="%d")
-#Test 1 - using np -> csv 
-#Works
-
-proper_labels = []
-
-for image in tqdm(files_in_train):
-	image_string = image[:-4]
-	image_label = int(labels_data[(labels_data['id'] == image_string)]['label'].values[0])
-	proper_labels.append(image_label)
-
-proper_labels_np = np.array(proper_labels)
-np.savetxt("proper_ordered_labels.csv", proper_labels_np, delimiter = ",", fmt = "%d")
-print(proper_labels_np)
+for image in files_in_train[:10]:
+  image_string = image[:-4]
+  image_label = int(labels_data[(labels_data['id'] == image_string)]['label'].values[0])
+  print(image_string, image_label)
