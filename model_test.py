@@ -1,11 +1,13 @@
+import tensorflow as tf
 import keras
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Conv2D, Flatten
+from keras.regularizers import l2
 
 import cv2 as cv
-import pandas as pd
-import os
 import numpy as np
+import os
+from tqdm import tqdm
 
 def list_files_in_directory(folder_path):
   """Lists all files in the specified directory.
@@ -23,15 +25,19 @@ def list_files_in_directory(folder_path):
   except FileNotFoundError:
     return []
 
+path = r"E:\Data\histopathologic-cancer-detection\test"
 
-#tif image format: img[row][column][B, G, R]
+model = keras.models.load_model(r"E:\Data\KaggleHistopathic\iteration_50k.keras")
 
-path = r"E:\Data\histopathologic-cancer-detection\train"
+test_files = list_files_in_directory(path)
 
-files_in_train = list_files_in_directory(path)
-#print(files_in_train[0], type(files_in_train[0]))
-#Getting all file names works
+test_images = np.array([cv.imread(os.path.join(path,file)) for file in test_files])
+predictions = model.predict(test_images, batch_size = None)
+predictions = [1 if p >= 0.5 else 0 for p in predictions]
 
-file_path = os.path.join(path, files_in_train[0])
-
-test_image = cv.imread(file_path)
+with open("submission2.csv", "w") as file:
+  file.write("id,label\n")
+  for i in tqdm(range(len(test_files))):
+    current_id = test_files[i][:-4]
+    current_label = predictions[i]
+    file.write(current_id + "," + str(current_label) + "\n")
